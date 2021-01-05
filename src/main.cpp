@@ -1,11 +1,7 @@
-#include "GameController.h"
+#include <iostream>
 
-int main(int, char* [])
+int main(int argc, char* argv[])
 {
-	GameController gameController;
-
-	while (gameController.gameRunning)
-		gameController.Update();
-
+	
 	return 0;
 }
