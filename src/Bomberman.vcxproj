@@ -152,9 +152,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="Ranking.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Rollers.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Shield.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bomb.h" />
@@ -165,9 +169,12 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PowerUp.h" />
     <ClInclude Include="Ranking.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Rollers.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Shield.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>

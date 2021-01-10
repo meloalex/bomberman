@@ -3,7 +3,7 @@
 #include "Types.h"
 #include "Renderer.h"
 
-enum class SceneState { RUNNING, PAUSED, GOTO_MENU, GOTO_GAMEPLAY, GOTO_RANKING, EXIT };
+enum class SceneState { RUNNING, PAUSED, GOTO_MENU, GOTO_GAMEPLAY, GOTO_GAMEPLAY2, GOTO_RANKING, EXIT };
 
 class Scene
 {

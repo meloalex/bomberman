@@ -25,7 +25,13 @@ void GameController::Update()
 		case SceneState::GOTO_GAMEPLAY:
 			gameState = GameState::GAMEPLAY;
 			delete(currentScene);
-			currentScene = new Gameplay();
+			currentScene = new Gameplay("Level1");
+			break;
+
+		case SceneState::GOTO_GAMEPLAY2:
+			gameState = GameState::GAMEPLAY2;
+			delete(currentScene);
+			currentScene = new Gameplay("Level2");
 			break;
 
 		case SceneState::GOTO_RANKING:
@@ -45,6 +51,19 @@ void GameController::Update()
 		break;
 
 	case GameState::GAMEPLAY:
+		switch (currentScene->state)
+		{
+		case SceneState::GOTO_MENU:
+			gameState = GameState::MENU;
+			delete(currentScene);
+			currentScene = new Menu();
+			break;
+		default:
+			break;
+		}
+		break;
+
+	case GameState::GAMEPLAY2:
 		switch (currentScene->state)
 		{
 		case SceneState::GOTO_MENU:

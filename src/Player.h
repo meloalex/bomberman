@@ -18,7 +18,7 @@ enum class Animation { MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT };
 class Player
 {
 private:
-	int speed;
+	
 	std::vector<Wall*>* map;
 
 	// Animation
@@ -45,6 +45,9 @@ private:
 public:
 	int score;
 	int lives;
+	bool hasBombPlaced;
+	float speed;
+	bool hasShield;
 
 	Player();
 	Player(myType::Rect pos, std::vector<Wall*>* _map, std::string _texture, std::vector<Bomb>* _bombs);
@@ -52,5 +55,7 @@ public:
 
 	void Update(bool _up, bool _down, bool _left, bool _right, bool _bombKey);
 	void Draw();
+
+	myType::Rect GetPosition();
 };
 

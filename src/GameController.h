@@ -5,7 +5,7 @@
 #include "Ranking.h"
 #include "Gameplay.h"
 
-enum class GameState { MENU, GAMEPLAY, RANKING, EXIT };
+enum class GameState { MENU, GAMEPLAY, GAMEPLAY2, RANKING, EXIT };
 
 class GameController
 {

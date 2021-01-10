@@ -1,27 +1,22 @@
 #pragma once
 #include "Types.h"
+#include "Renderer.h"
 
-struct Wall
+class Wall
 {
+private:
+	std::string texture;
+	myType::Rect sprite;
+
+public:
 	myType::Rect position; // World Position
-	bool destructable;
+	bool isDestructable;
 	int state;
 
-	Wall()
-	{
-		position = myType::Rect(0, 0, 0, 0);
-		destructable = false;
-		state = -1;
-	}
+	Wall();
+	Wall(myType::Rect _position, bool _destructable);
 
-	Wall(myType::Rect _position, bool _destructable)
-	{
-		position = _position;
-		destructable = _destructable;
-
-		if (_destructable)
-			state = 2;
-		else
-			state = -1;
-	}
+	void Update();
+	void Draw();
+	void TakeDamage();
 };

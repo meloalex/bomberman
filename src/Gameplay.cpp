@@ -2,8 +2,13 @@
 
 Gameplay::Gameplay()
 {
+}
+
+Gameplay::Gameplay(std::string level)
+{
 	internalState = GameplayState::GAME_START;
-	LoadLevelData();
+	std::cout << level << std::endl;
+	LoadLevelData(level);
 
 	Renderer::Instance()->LoadRect("backgroundGameplay", myType::Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
 	
@@ -36,6 +41,14 @@ void Gameplay::Update(InputManager inputManager)
 		bombs[i].Update(deltaTime);
 
 	ClearExplodedBombs();
+	BombCollision();
+	PowerUpsCollision();
+
+	for (PowerUp* p : powerUps)
+		p->Update(deltaTime);
+
+	if (playerOne.lives <= 0 || playerTwo.lives <= 0)
+		state = SceneState::GOTO_MENU;
 }
 
 void Gameplay::Draw()
@@ -44,20 +57,11 @@ void Gameplay::Draw()
 
 	Renderer::Instance()->PushImage("backgroundGameplay", "backgroundGameplay");
 
-	for (int i = 0; i < map.size(); i++)
-	{
-		if (map[i]->destructable)
-		{
-			if (map[i]->state == 2)
-				Renderer::Instance()->PushSprite("items", destructibleWallSprite, map[i]->position);
-			else if (map[i]->state == 1)
-				Renderer::Instance()->PushSprite("items", toDestroyWallSprite, map[i]->position);
-		}
-		else
-		{
-			Renderer::Instance()->PushSprite("items", defaultWallSprite, map[i]->position);
-		}
-	}
+	for (Wall* w : map)
+		w->Draw();
+
+	for (PowerUp* p : powerUps)
+		p->Draw();
 
 	playerOne.Draw();
 	playerTwo.Draw();
@@ -70,7 +74,7 @@ void Gameplay::Draw()
 	Renderer::Instance()->Render();
 }
 
-void Gameplay::LoadLevelData()
+void Gameplay::LoadLevelData(std::string level)
 {
 	try {
 		rapidxml::xml_document<> doc;
@@ -83,7 +87,7 @@ void Gameplay::LoadLevelData()
 
 		rapidxml::xml_node<>* pRoot = doc.first_node();	// Game node
 
-		rapidxml::xml_node<>* pLevelOne = pRoot->first_node("Level1");
+		rapidxml::xml_node<>* pLevelOne = pRoot->first_node(level.c_str());
 
 		rapidxml::xml_node<>* pPlayers = pLevelOne->first_node(); // Players Node
 
@@ -162,8 +166,130 @@ void Gameplay::ClearExplodedBombs()
 	for (auto it = bombs.begin(); it != bombs.end();)
 	{
 		if (it->state == BombState::GONE)
+		{
+			if (it->propietary == "playerOne")
+				playerOne.hasBombPlaced = false;
+			else if (it->propietary == "playerTwo")
+				playerTwo.hasBombPlaced = false;
+
 			it = bombs.erase(it);
+		}
 		else
 			it++;
+	}
+}
+
+void Gameplay::BombCollision() {
+	for (auto it = bombs.begin(); it != bombs.end();)
+	{
+		if (it->state == BombState::EXPLODING && !it->hasAlreadyExploded)
+		{
+			bool hasHitPlayerOne = myType::RectRectCollision(playerOne.GetPosition(), it->GetPosition());
+
+			for (int i = 0; i < 8; i++)
+			{
+				hasHitPlayerOne = myType::RectRectCollision(playerOne.GetPosition(), it->explosionsPositions[i]);
+				if (hasHitPlayerOne) break;
+			}
+
+			if (hasHitPlayerOne && !playerOne.hasShield)
+			{
+				playerTwo.score += 100;
+				playerOne.lives--;
+				it->hasAlreadyExploded = true;
+				std::cout << "has hit player one \n";
+			}
+
+			bool hasHitPlayerTwo = myType::RectRectCollision(playerTwo.GetPosition(), it->GetPosition());
+
+			for (int i = 0; i < 8; i++)
+			{
+				hasHitPlayerTwo = myType::RectRectCollision(playerTwo.GetPosition(), it->explosionsPositions[i]);
+				if (hasHitPlayerTwo) break;
+			}
+
+			if (hasHitPlayerTwo && !playerTwo.hasShield)
+			{
+				playerOne.score += 100;
+				playerTwo.lives--;
+				it->hasAlreadyExploded = true;
+				std::cout << "has hit player two \n";
+			}
+
+			// Check walls
+			for (int i = 0; i < map.size(); i++)
+			{
+				bool hasHitWall = false;
+
+				for (int j = 0; j < 8; j++)
+				{
+					hasHitWall = myType::RectRectCollision(map[i]->position, it->explosionsPositions[j]);
+					if (hasHitWall) break;
+				}
+
+				if (hasHitWall)
+				{
+					map[i]->TakeDamage();
+					it->hasAlreadyExploded = true;
+					std::cout << "has hit a wall \n";
+
+					if (map[i]->state == 0)
+					{
+						map.erase(map.begin() + i);
+						DropPowerUp(it->GetPosition());
+						if (it->propietary == "playerOne")
+						{
+							playerOne.score += 15;
+						}
+						else if (it->propietary == "playerTwo")
+						{
+							playerTwo.score += 15;
+						}
+					}
+				}
+			}
+		}
+
+		it++;
+	}
+}
+
+void Gameplay::DropPowerUp(myType::Rect startPosition)
+{
+	/* initialize random seed: */
+	srand(time(NULL));
+	bool dropProbability = (rand() % 100) < 20;
+
+	if (!dropProbability) return; // No drop
+
+	int powerUpProbab = (rand() % 100) < 50;
+	if (powerUpProbab < 50)
+	{
+		powerUps.push_back(new Rollers(startPosition));
+	}
+	else
+	{
+		powerUps.push_back(new Shield(startPosition));
+	}
+}
+
+void Gameplay::PowerUpsCollision()
+{
+	for (int i = 0; i < powerUps.size(); i++)
+	{
+		if (myType::RectRectCollision(powerUps[i]->GetPosition(), playerOne.GetPosition()) && !powerUps[i]->activated)
+		{
+			powerUps[i]->Start(&playerOne);
+		}
+
+		if (myType::RectRectCollision(powerUps[i]->GetPosition(), playerTwo.GetPosition()) && !powerUps[i]->activated)
+		{
+			powerUps[i]->Start(&playerTwo);
+		}
+
+		if (powerUps[i]->stopPls)
+		{
+			powerUps.erase(powerUps.begin() + i);
+		}
 	}
 }

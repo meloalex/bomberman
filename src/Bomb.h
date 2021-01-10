@@ -1,13 +1,13 @@
 #pragma once
 #include <iostream>
 #include <time.h>
+#include <unordered_map>
 #include <vector>
 
 #include "Renderer.h"
 #include "Types.h"
 
-#define BOMB_ANIMATION_TIME 0.3
-#define BOMB_MOVEMENT_ANIMATION_KEYFRAMES 2
+#define BOMB_ANIMATION_TIME 0.1
 #define KABOOM_TIME 3
 #define EXPLOSION_ANIMATION_TIME 0.3
 
@@ -37,18 +37,22 @@ private:
 	myType::Rect position;
 	bool isExploding;
 	bool reverse;
-
-	std::vector<myType::Rect> explosionFrames;
 	
-
+	myType::Rect explosionsSprites[8];
+	
 	void GoKaboom();
 public:
 	Bomb();
-	Bomb(myType::Vector2 startPosition);
+	Bomb(myType::Vector2 startPosition, std::string _propietary);
 	~Bomb();
 
+	std::string propietary;
+	myType::Rect explosionsPositions[8];
 	BombState state;
+	bool hasAlreadyExploded;
 
 	void Update(float dTime);
 	void Draw();
+
+	myType::Rect GetPosition();
 };

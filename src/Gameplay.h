@@ -4,6 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <time.h>
+#include <stdlib.h>
 
 #include "Scene.h"
 #include "Button.h"
@@ -11,6 +12,9 @@
 #include "Player.h"
 #include "HUD.h"
 #include "Bomb.h"
+#include "PowerUp.h"
+#include "Rollers.h"
+#include "Shield.h"
 
 #include "../dep/inc/xml/rapidxml.hpp"
 #include "../dep/inc/xml/rapidxml_iterators.hpp"
@@ -47,14 +51,18 @@ private:
     float deltaTime;
 
     std::vector<Bomb> bombs;
+    std::vector<PowerUp*> powerUps;
 
-    void LoadLevelData();
+    void LoadLevelData(std::string level);
     void StartTime();
     void UpdateTime();
     void ClearExplodedBombs();
-
+    void BombCollision();
+    void DropPowerUp(myType::Rect startPosition);
+    void PowerUpsCollision();
 public:
     Gameplay();
+    Gameplay(std::string level);
     ~Gameplay();
 
     void Update(InputManager inputmanager);

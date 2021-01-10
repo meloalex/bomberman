@@ -9,6 +9,7 @@ Player::Player(myType::Rect pos, std::vector<Wall*>* _map, std::string _texture,
 {
 	texture = _texture;
 	map = _map;
+	hasBombPlaced = false;
 
 	position = pos;
 
@@ -28,6 +29,7 @@ Player::Player(myType::Rect pos, std::vector<Wall*>* _map, std::string _texture,
 	speed = 1;
 	score = 0;
 	lives = 3;
+	hasShield = false;
 }
 
 Player::~Player()
@@ -141,8 +143,12 @@ void Player::Animate()
 
 void Player::PlaceBomb()
 {
-	Bomb bomb = Bomb(position.position);
-	gameBombs->push_back(bomb);
+	if (!hasBombPlaced)
+	{
+		Bomb bomb = Bomb(position.position, texture);
+		gameBombs->push_back(bomb);
+		hasBombPlaced = true;
+	}
 }
 
 bool Player::Collision(myType::Rect futurePosition)
@@ -175,4 +181,9 @@ bool Player::Collision(myType::Rect futurePosition)
 	}
 
 	return false;
+}
+
+myType::Rect Player::GetPosition()
+{
+	return position;
 }
