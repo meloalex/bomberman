@@ -134,4 +134,39 @@ namespace myType {
 			path = p;
 		}
 	};
+
+	inline bool VectorRectCollision(myType::Vector2 v, myType::Rect r) {
+		return (v.x >= r.position.x) && (v.x <= (r.position.x + r.w)) && (v.y >= r.position.y) && (v.y <= (r.position.y + r.h));
+	}
+
+	inline bool RectRectCollision(Rect rect1, Rect rect2) {
+		return (rect1.position.x < rect2.position.x + rect2.w && rect1.position.x + rect1.w > rect2.position.x && rect1.position.y < rect2.position.y + rect2.h && rect1.position.y + rect1.h > rect2.position.y);
+	}
+
+	inline bool RectRectHorizontalCollision(Rect r, Rect t) {
+		Vector2 topRight(r.position.x + r.w, r.position.y);
+		Vector2 botLeft(r.position.x, r.position.y + r.h);
+		Vector2 botRight(r.position.x + r.w, r.position.y + r.h);
+		return ((VectorRectCollision(topRight, t) || VectorRectCollision(r.position, t)) && !(VectorRectCollision(botLeft, t) || VectorRectCollision(botRight, t))) || (!(VectorRectCollision(topRight, t) || VectorRectCollision(r.position, t)) && (VectorRectCollision(botLeft, t) || VectorRectCollision(botRight, t)));
+	}
+
+	inline bool RectRectVerticalCollision(Rect r, Rect t) {
+		Vector2 topRight(r.position.x + r.w, r.position.y);
+		Vector2 botLeft(r.position.x, r.position.y + r.h);
+		Vector2 botRight(r.position.x + r.w, r.position.y + r.h);
+		return ((VectorRectCollision(topRight, t) || VectorRectCollision(botRight, t)) && !(VectorRectCollision(botLeft, t) || VectorRectCollision(r.position, t))) || (!(VectorRectCollision(topRight, t) || VectorRectCollision(botRight, t)) && (VectorRectCollision(botLeft, t) || VectorRectCollision(r.position, t)));
+	}
+
+	inline myType::Rect RotateRect90(Rect r) {
+		myType::Rect t;
+		t.position = r.position;
+		t.w = r.h;
+		t.h = r.w;
+		return t;
+	}
+
+	inline myType::Vector2 CenterRect(Rect r)
+	{
+		return Vector2(r.w/2, r.h/2);
+	}
 }

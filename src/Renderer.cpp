@@ -15,15 +15,27 @@ Renderer::Renderer()
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (m_renderer == nullptr) throw "No es pot inicialitzar SDL_Renderer";
 
-	//Initialize renderer color
+	// Initialize renderer color
 	SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 
-	//IMG --- INIT ---
+	// IMG --- INIT ---
 	const Uint8 imgFlags{ IMG_INIT_PNG | IMG_INIT_JPG };
 	if (!(IMG_Init(imgFlags) & imgFlags)) throw "Error: SDL_imageinit";
 
-	//TTF --- INIT ---
+	// TTF --- INIT ---
 	if (TTF_Init() != 0) throw"No es pot inicialitzar SDL_ttf";
+
+	// Load Fonts
+	LoadFont(myType::Font("../res/ttf/saiyan.ttf", 24, "gameplay"));
+	LoadFont(myType::Font("../res/ttf/game_over.ttf", 72, "gameOver"));
+
+	// Load Textures:
+	LoadTexture("backgroundGameplay", "../res/img/bgGame.jpg");
+	LoadTexture("explosion", "../res/img/explosion.png");
+	LoadTexture("items", "../res/img/items.png");
+	LoadTexture("playerOne", "../res/img/player1.png");
+	LoadTexture("playerTwo", "../res/img/player2.png");
+	LoadTexture("debug", "../res/img/debug.png");
 
 };
 
@@ -94,9 +106,22 @@ void Renderer::PushImage(const std::string &id, const std::string &idRect)
 	SDL_RenderCopy(m_renderer, m_textureData[id], nullptr, m_rects[idRect]);
 };
 
+void Renderer::PushImage(const std::string& id, const myType::Rect &rect) {
+	SDL_Rect rectangle{ rect.position.x, rect.position.y, rect.w , rect.h };
+
+	SDL_RenderCopy(m_renderer, m_textureData[id], nullptr, &rectangle);
+};
+
 void Renderer::PushSprite(const std::string &id, const  std::string &idRectSprite,const  std::string &idRectPos) 
 {
 	SDL_RenderCopy(m_renderer, m_textureData[id],m_rects[idRectSprite], m_rects[idRectPos]);
+}
+
+void Renderer::PushSprite(const std::string& id, const myType::Rect& rectSprite, const myType::Rect& rectPos) {
+	SDL_Rect rectangleSprite{ rectSprite.position.x, rectSprite.position.y, rectSprite.w , rectSprite.h };
+	SDL_Rect rectanglePos{ rectPos.position.x, rectPos.position.y, rectPos.w , rectPos.h };
+
+	SDL_RenderCopy(m_renderer, m_textureData[id], &rectangleSprite, &rectanglePos);
 }
 
 void Renderer::PushRotatedSprite(const std::string & id, const std::string& idRectSprite, const std::string& idRectPos ,float angle)

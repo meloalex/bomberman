@@ -8,7 +8,10 @@
 
 #define SCREEN_WIDTH 720
 #define SCREEN_HEIGHT 704
+#define HUD_WIDTH SCREEN_WIDTH
+#define HUD_HEIGHT 80
 
+#define SPRITESHEET_RECT_SIZE 48
 
 class Renderer {
 
@@ -36,7 +39,9 @@ public:
 	 myType::Vector2 LoadTextureText(const std::string &fontId, myType::Text text);
 	 myType::Vector2 GetTextureSize(const std::string &id);
 	 void PushImage(const std::string &id, const std::string& idRect);
+	 void PushImage(const std::string &id, const myType::Rect &rect);
 	 void PushSprite(const std::string &id,const std::string &idRectSprite,const std::string &idRectPos);
+	 void PushSprite(const std::string& id, const myType::Rect& rectSprite, const myType::Rect& rectPos);
 	 void PushRotatedSprite(const std::string &id, const std::string &idRectSprite, const std::string &idRectPos, float angle);
 	 void SetRenderDrawColor(int r, int g, int b);
 	 void SetRenderDrawColor(const myType::Color &c);

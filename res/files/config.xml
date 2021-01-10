@@ -2,20 +2,20 @@
 <Game>
 	<Level1>
 		<Players>
-			<Player1 lives = 3>
+			<Player1 lives="3">
 				<Positon x="0" y="0"/>
 			</Player1>
-			<Player2 lives = 3>
+			<Player2 lives="3">
 				<Positon x="12" y="10"/>
 			</Player2>
 		</Players>
 		<Map>
-			<Wall destructible = "false" x="1" y="1"/>
-			<Wall destructible = "false" x="3" y="1"/>
-			<Wall destructible = "false" x="5" y="1"/>
-			<Wall destructible = "false" x="7" y="1"/>
-			<Wall destructible = "false" x="9" y="1"/>
-			<Wall destructible = "false" x="11" y="1"/>
+			<Wall destructible = "true" x="1" y="1"/>
+			<Wall destructible = "true" x="3" y="1"/>
+			<Wall destructible = "true" x="5" y="1"/>
+			<Wall destructible = "true" x="7" y="1"/>
+			<Wall destructible = "true" x="9" y="1"/>
+			<Wall destructible = "true" x="11" y="1"/>
 
 			<Wall destructible = "false" x="1" y="3"/>
 			<Wall destructible = "false" x="3" y="3"/>
@@ -48,10 +48,10 @@
 	</Level1>
 	<Level1>
 		<Players>
-			<Player1 lives = 3>
+			<Player1 lives="3">
 				<Positon x="0" y="0"/>
 			</Player1>
-			<Player2 lives = 3>
+			<Player2 lives="3">
 				<Positon x="12" y="10"/>
 			</Player2>
 		</Players>
